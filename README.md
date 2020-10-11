@@ -2,6 +2,9 @@
 
 Project for navigating between directories
 
+
+![goto](https://github.com/ulfox/goto/blob/main/media/goto.gif)
+
 ## Runtime dependencies
 - python3
 - pyyaml
