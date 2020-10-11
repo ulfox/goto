@@ -1,6 +1,6 @@
 # goto
 
-Projecct for navigating between directories
+Project for navigating between directories
 
 ## Runtime dependencies
 - python3
