@@ -20,6 +20,7 @@ function goto_user_info() {
 ## Project's direcctory
 ## Default: ${__GOTO_WORKDIR}. To change this, issue goto set-pdir /some/path
 export _goto_workdir="$(python3 ${__GOTO_WORKDIR}/state.py get_workdir)"
+export _goto_projectdir="$(python3 ${__GOTO_WORKDIR}/state.py get_workdir)"
 
 ## Simple help menu
 function __goto_help() {
