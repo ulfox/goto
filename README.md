@@ -12,7 +12,11 @@ First get the code
 
     git clone https://github.com/ulfox/goto.git
 
-The installation is very trivial, since all we have to do is add in our ..bashrc. the following line
+##### Get dependenceis
+
+    bash setup.sh
+
+The installation after you download the pyyaml dependency is very trivial, since all we have to do is add in our ..bashrc. the following line
 
 If we assume you installed moved the goto app under /opt/goto, then
 
