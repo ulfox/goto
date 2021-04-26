@@ -1,7 +1,9 @@
 # goto
 
+
 Project for navigating between directories
 
+[Docs:Kafka-Video-Streaming](https://blog.primef.org/blog/kafka/2021-04-10/kafka-video-stream/)
 
 ![goto](https://github.com/ulfox/goto/blob/main/media/goto.gif)
 
