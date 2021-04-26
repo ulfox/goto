@@ -3,7 +3,7 @@
 
 Project for navigating between directories
 
-[Docs:Kafka-Video-Streaming](https://blog.primef.org/blog/kafka/2021-04-10/kafka-video-stream/)
+[Docs:GoTo](https://blog.primef.org/blog/opt/2020-11-16/directory-aliases/)
 
 ![goto](https://github.com/ulfox/goto/blob/main/media/goto.gif)
 
