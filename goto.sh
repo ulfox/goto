@@ -102,7 +102,7 @@ function goto() {
 				python3 "${__GOTO_WORKDIR}/state.py" "set_workdir" "${2}"
 				export _goto_projectdir="$(python3 ${__GOTO_WORKDIR}/state.py get_workdir)"
 				shift 2;;
-			"project")
+			"project"|"-p")
 				if [[ -z "${2}" ]]; then
 					echo "Which project?"
 					return 1
@@ -139,11 +139,11 @@ _goto_completions_dir() {
 
     case ${COMP_CWORD} in
         1)
-            COMPREPLY=($(compgen -W "alias set list rm project show-projects set-pdir help ${calianses}" -- ${cur}))
+            COMPREPLY=($(compgen -W "alias set list rm project -p show-projects set-pdir help ${calianses}" -- ${cur}))
             ;;
         2)
 			case ${prev} in
-				"project" | "show-projects")
+				"project" | "show-projects"| "-p")
 					for i in $(ls "${_goto_projectdir}"); do
 						if [[ -d "${_goto_projectdir}/${i}" ]]; then
 							COMPREPLY+=($(compgen -W "${i}" -- "${cur}"))
