@@ -1,2 +1,6 @@
 .aliases.yml
 __pycache__
+local
+state
+modules
+

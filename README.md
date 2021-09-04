@@ -28,13 +28,10 @@ Once you add the above line in your .bashrc do a hot env reload
     source ~/.bashrc
 
 
-## Runtime dependencies
-- python3
-- pyyaml
-
 ##  Installation
 
 - Clone the project to your desired location
+- Run ./setup.sh to build the state binary
 - Add in your .bashrc `source /path/to/goto/goto.sh`
 - Finally reload your current env `source ~/.bashrc`
 

@@ -19,8 +19,8 @@ function goto_user_info() {
 
 ## Project's direcctory
 ## Default: ${__GOTO_WORKDIR}. To change this, issue goto set-pdir /some/path
-export _goto_workdir="$(python3 ${__GOTO_WORKDIR}/state.py get_workdir)"
-export _goto_projectdir="$(python3 ${__GOTO_WORKDIR}/state.py get_workdir)"
+export _goto_workdir="$(${__GOTO_WORKDIR}/state -get_workdir)"
+export _goto_projectdir="$(${__GOTO_WORKDIR}/state -get_workdir)"
 
 ## Simple help menu
 function __goto_help() {
@@ -38,11 +38,11 @@ function __goto_help() {
 
 ## _goto cd function
 function _goto() {
-	is_alias="$(python3 ${__GOTO_WORKDIR}/state.py check ${1})"
+	is_alias="$(${__GOTO_WORKDIR}/state -check ${1})"
 	if [[ "${is_alias%%::::*}" == "True" ]]; then
 		cd "${is_alias##*::::}"
 	else
-		subpath="$(python3 "${__GOTO_WORKDIR}/state.py" "check_paths" "${1}")"
+		subpath="$("${__GOTO_WORKDIR}/state" "-check_paths" "${1}")"
 		if [[ ! -d "${_goto_projectdir}/${subpath}" ]]; then
 			echo "Error: ${subpath} is not a directory or it does not exist"
 			return 1
@@ -67,17 +67,17 @@ function goto() {
 					return 1
 				fi
 				echo "Changing directory alias --- ${2}"
-				cd "$(python3 "${__GOTO_WORKDIR}/state.py" "alias" "${2}")"
+				cd "$("${__GOTO_WORKDIR}/state" "-get" "${2}")"
 				shift 2;;
 			"set")
 				if [[ -z "${2}" ]]; then
 					echo "You need to give an alias name"
 					return 1
 				fi
-				python3 "${__GOTO_WORKDIR}/state.py" "add" "${2}" "${PWD}"
+				"${__GOTO_WORKDIR}/state" "-add" "${2}" "${PWD}"
 				shift 2;;
 			"list")
-				aliases="$(python3 ${__GOTO_WORKDIR}/state.py list)"
+				aliases="$(${__GOTO_WORKDIR}/state -list)"
 				echo "Aliases"
 				_IFS="${IFS}"
 				IFS=","
@@ -88,7 +88,7 @@ function goto() {
 				shift 1
 				return 0;;
 			"rm")
-				python3 "${__GOTO_WORKDIR}/state.py" "rm" "${2}"
+				"${__GOTO_WORKDIR}/state" "-rm" "${2}"
 				shift 2;;
 			"show-projects")
 				echo "Projects"
@@ -99,10 +99,10 @@ function goto() {
 					echo "What dir?"
 					return 1
 				fi
-				python3 "${__GOTO_WORKDIR}/state.py" "set_workdir" "${2}"
-				export _goto_projectdir="$(python3 ${__GOTO_WORKDIR}/state.py get_workdir)"
+				"${__GOTO_WORKDIR}/state" "-set_workdir" "${2}"
+				export _goto_projectdir="$(${__GOTO_WORKDIR}/state -get_workdir)"
 				shift 2;;
-			"project"|"-p")
+			"project")
 				if [[ -z "${2}" ]]; then
 					echo "Which project?"
 					return 1
@@ -127,7 +127,7 @@ _goto_completions_dir() {
     cur=${COMP_WORDS[COMP_CWORD]}
     prev=${COMP_WORDS[COMP_CWORD-1]}
 
-	aliases="$(python3 ${__GOTO_WORKDIR}/state.py list)"
+	aliases="$(${__GOTO_WORKDIR}/state -list)"
 
 	calianses=""
 	_IFS="${IFS}"
@@ -139,18 +139,18 @@ _goto_completions_dir() {
 
     case ${COMP_CWORD} in
         1)
-            COMPREPLY=($(compgen -W "alias set list rm project -p show-projects set-pdir help ${calianses}" -- ${cur}))
+            COMPREPLY=($(compgen -W "alias set list rm project show-projects set-pdir help ${calianses}" -- ${cur}))
             ;;
         2)
 			case ${prev} in
-				"project" | "show-projects"| "-p")
+				"project" | "show-projects")
 					for i in $(ls "${_goto_projectdir}"); do
 						if [[ -d "${_goto_projectdir}/${i}" ]]; then
 							COMPREPLY+=($(compgen -W "${i}" -- "${cur}"))
 						fi
 					done;;
 				"rm" | "alias")
-					aliases="$(python3 ${__GOTO_WORKDIR}/state.py list)"
+					aliases="$(${__GOTO_WORKDIR}/state -list)"
 					_IFS="${IFS}"
 					IFS=","
 					for i in ${aliases}; do
