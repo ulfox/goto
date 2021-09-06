@@ -24,9 +24,12 @@ type State struct {
 }
 
 func (s *State) loadInterfaceToStruct() {
-	s.DB.Read()
+	err := s.DB.Read()
+	if err != nil {
+		s.logger.Fatalf(err.Error())
+	}
 
-	data, err := yaml.Marshal(&s.DB.Data)
+	data, err := yaml.Marshal(&s.DB.Data[0])
 	if err != nil {
 		s.logger.Fatalf(err.Error())
 	}
