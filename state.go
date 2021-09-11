@@ -12,18 +12,18 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type Locations struct {
+type locations struct {
 	Aliases map[string]string
 	Workdir string
 }
 
-type State struct {
+type state struct {
 	DB        *db.Storage
-	Locations Locations
+	Locations locations
 	logger    *logrus.Logger
 }
 
-func (s *State) loadInterfaceToStruct() {
+func (s *state) loadInterfaceToStruct() {
 	err := s.DB.Read()
 	if err != nil {
 		s.logger.Fatalf(err.Error())
@@ -40,7 +40,7 @@ func (s *State) loadInterfaceToStruct() {
 	}
 }
 
-func (s *State) checkPaths(p string, kwargs ...map[string]string) string {
+func (s *state) checkPaths(p string, kwargs ...map[string]string) string {
 	var showStdout bool
 	if strings.HasSuffix(p, "/") && len(p) > 1 {
 		p = p[:len(p)-1]
@@ -59,7 +59,7 @@ func (s *State) checkPaths(p string, kwargs ...map[string]string) string {
 	return p
 }
 
-func (s *State) add(p, pwd string) {
+func (s *state) add(p, pwd string) {
 	err := s.DB.Upsert(
 		fmt.Sprintf("aliases.%s", p),
 		pwd,
@@ -70,7 +70,7 @@ func (s *State) add(p, pwd string) {
 	s.loadInterfaceToStruct()
 }
 
-func (s *State) list_aliases() {
+func (s *state) listAliases() {
 	var aliases []string
 
 	for i, j := range s.Locations.Aliases {
@@ -79,11 +79,11 @@ func (s *State) list_aliases() {
 	fmt.Print(strings.Join(aliases, ","))
 }
 
-func (s *State) rm(p string) {
+func (s *state) rm(p string) {
 	s.DB.Delete(fmt.Sprintf("aliases.%s", p))
 }
 
-func (s *State) get(p string) {
+func (s *state) get(p string) {
 	path, err := s.DB.GetPath(fmt.Sprintf("aliases.%s", p))
 	if err != nil {
 		return
@@ -91,7 +91,7 @@ func (s *State) get(p string) {
 	fmt.Print(path.(string))
 }
 
-func (s *State) check(a string) {
+func (s *state) check(a string) {
 	s.loadInterfaceToStruct()
 	path, err := s.DB.GetPath(fmt.Sprintf("aliases.%s", a))
 	if err != nil {
@@ -101,7 +101,7 @@ func (s *State) check(a string) {
 	fmt.Printf("%s::::%s\n", "True", path)
 }
 
-func (s *State) setWorkdir(p string) {
+func (s *state) setWorkdir(p string) {
 	err := s.DB.Upsert(
 		"workdir",
 		p,
@@ -112,7 +112,7 @@ func (s *State) setWorkdir(p string) {
 	s.loadInterfaceToStruct()
 }
 
-func (s *State) getWorkdir() {
+func (s *state) getWorkdir() {
 	path, err := s.DB.GetPath("workdir")
 	if err != nil {
 		return
@@ -138,14 +138,14 @@ func main() {
 		logger.Fatalf(err.Error())
 	}
 
-	state := State{
+	gotoState := state{
 		DB:     db,
 		logger: logger,
-		Locations: Locations{
+		Locations: locations{
 			Aliases: make(map[string]string),
 		},
 	}
-	state.loadInterfaceToStruct()
+	gotoState.loadInterfaceToStruct()
 
 	addPath := flag.String("add", "", "add path as alias")
 	checkPaths := flag.String("check_paths", "", "")
@@ -159,35 +159,35 @@ func main() {
 	flag.Parse()
 	if *addPath != "" {
 		if len(flag.Args()) >= 1 {
-			state.add(*addPath, flag.Arg(0))
+			gotoState.add(*addPath, flag.Arg(0))
 		}
 	}
 
 	if *checkPaths != "" {
-		state.checkPaths(*checkPaths, map[string]string{"show": "true"})
+		gotoState.checkPaths(*checkPaths, map[string]string{"show": "true"})
 	}
 
 	if *listPaths {
-		state.list_aliases()
+		gotoState.listAliases()
 	}
 
 	if *rmPaths != "" {
-		state.rm(*rmPaths)
+		gotoState.rm(*rmPaths)
 	}
 
 	if *getPaths != "" {
-		state.get(*getPaths)
+		gotoState.get(*getPaths)
 	}
 
 	if *check != "" {
-		state.check(*check)
+		gotoState.check(*check)
 	}
 
 	if *setWorkdir != "" {
-		state.setWorkdir(*setWorkdir)
+		gotoState.setWorkdir(*setWorkdir)
 	}
 
 	if *getWorkdir {
-		state.getWorkdir()
+		gotoState.getWorkdir()
 	}
 }
