@@ -29,7 +29,8 @@ func (s *state) loadInterfaceToStruct() {
 		s.logger.Fatalf(err.Error())
 	}
 
-	data, err := yaml.Marshal(&s.DB.Data[0])
+	v := s.DB.State.GetData()
+	data, err := yaml.Marshal(&v)
 	if err != nil {
 		s.logger.Fatalf(err.Error())
 	}
