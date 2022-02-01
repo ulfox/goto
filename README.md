@@ -3,7 +3,7 @@
 
 Project for navigating between directories
 
-[Docs:GoTo](https://blog.primef.org/blog/opt/2020-11-16/directory-aliases/)
+[Docs:GoTo](https://blog.sysiops.com/blog/opt/2020-11-16/directory-aliases/)
 
 ![goto](https://github.com/ulfox/goto/blob/main/media/goto.gif)
 
